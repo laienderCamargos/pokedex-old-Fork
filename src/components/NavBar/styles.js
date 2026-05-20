@@ -28,7 +28,7 @@ export const BackContainer = styled.nav`
 export const TitleContainer = styled.nav`
   width: 60%;
   text-align: center;
-  margin-left: 10em;
+  margin: 0 auto;
 
   h1 {
     color: gray;
@@ -36,5 +36,23 @@ export const TitleContainer = styled.nav`
     &:hover {
       color: black;
     }
+  }
+`;
+
+export const TemaContainer = styled.button`
+  margin-right: 6rem;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 6rem;
+  img {
+    width: 40px;
+    height: 40px;
+    display: block;
   }
 `;

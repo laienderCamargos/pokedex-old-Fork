@@ -1,48 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { useRouteMatch } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import api, { getPokemonImageUrl2 } from "../../services/api";
-
+import { PokemonContext } from "../../providers/pokemon";
 import { Pokeball } from "../Spinner";
-import { Badge } from "./styles";
+import { Badge, Menu, HeaderContainer } from "./styles";
 
 import "./styles.css";
 
 const Pokemon = () => {
   const [pokemon, setPokemom] = useState([]);
-  const [pokemonSpecies, setPokemonSpecies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [imagePokemon, setImagePokemon] = useState("");
 
-  const { params } = useRouteMatch();
+  const { pokemonIndex } = useParams();
+  const { pokemons, updatePokemon } = useContext(PokemonContext);
+
+  const handleCaughtClick = () => {
+    if (!pokemon.id) return;
+    const updated = { ...pokemon, caught: !pokemon.caught };
+    setPokemom(updated);
+    updatePokemon(updated);
+  };
+
+  const handleFavoriteClick = () => {
+    if (!pokemon.id) return;
+    const updated = { ...pokemon, favorite: !pokemon.favorite };
+    setPokemom(updated);
+    updatePokemon(updated);
+  };
 
   useEffect(() => {
     const loadPokemonData = async () => {
-      await api.get(`pokemon/${params.pokemonIndex}`).then((response) => {
-        const {
-          name,
-          types,
-          id,
-          weight,
-          height,
-          sprites,
-          stats,
-          abilities,
-        } = response.data;
-        setPokemom({
+      try {
+        let pokemonId = pokemonIndex;
+
+        // Procura o pokemon no contexto pelo índice
+        const pokemonFromContext = pokemons.find(
+          (p) =>
+            p.name.toLowerCase() === pokemonIndex.toLowerCase() ||
+            p.id === parseInt(pokemonIndex),
+        );
+
+        const favorite = pokemonFromContext?.favorite || false;
+        const caught = pokemonFromContext?.caught || false;
+
+        if (pokemonFromContext) {
+          pokemonId = pokemonFromContext.id;
+        }
+
+        // Sempre faz a chamada de API para obter dados completos
+        const response = await api.get(`pokemon/${pokemonId}`);
+        const { name, types, id, weight, height, sprites, stats, abilities } =
+          response.data;
+
+        const pokemonData = {
           name: name.replace(/-/g, " "),
           types: types.map(
             (typeInfo) =>
-              typeInfo.type.name[0].toUpperCase() + typeInfo.type.name.slice(1)
+              typeInfo.type.name[0].toUpperCase() + typeInfo.type.name.slice(1),
           ),
           abilities: abilities,
-          // .map((ability) =>
-          //   ability.ability.name
-          //     .toLowerCase()
-          //     .split("-")
-          //     .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-          //     .join(" ")
-          // )
-          // .join(" / "),
           id: id,
           weight: weight / 10,
           height: height / 10,
@@ -56,14 +73,8 @@ const Pokemon = () => {
             stats[4].base_stat,
             stats[5].base_stat,
           ],
-
           evs: stats
-            .filter((stat) => {
-              if (stat.effort > 0) {
-                return true;
-              }
-              return false;
-            })
+            .filter((stat) => stat.effort > 0)
             .map((stat) => {
               return `${stat.effort} ${stat.stat.name
                 .toLowerCase()
@@ -72,47 +83,23 @@ const Pokemon = () => {
                 .join(" ")}`;
             })
             .join(", "),
-        });
-      });
+          favorite,
+          caught,
+        };
 
-      await api
-        .get(`pokemon-species/${params.pokemonIndex}`)
-        .then((response) => {
-          const {
-            flavor_text_entries,
-            gender_rate,
-            capture_rate,
-            egg_groups,
-            hatch_counter,
-          } = response.data;
-          setPokemonSpecies({
-            description: flavor_text_entries
-              .filter((flavor) => flavor.language.name === "en")
-              .map((flavor) => flavor.flavor_text),
-
-            genderRatioFemale: gender_rate * 12.5,
-            genderRatioMale: 12.5 * (8 - gender_rate),
-            catchRate: Math.round((100 / 255) * capture_rate),
-            eggGroups: egg_groups
-              .map((group) => {
-                return group.name
-                  .toLowerCase()
-                  .split(" ")
-                  .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-                  .join(" ");
-              })
-              .join(", "),
-            hatchSteps: 255 * (hatch_counter + 1),
-          });
-        });
-
-      await setImagePokemon(getPokemonImageUrl2(pokemon.id));
-
-      setIsLoading(false);
+        setPokemom(pokemonData);
+        setImagePokemon(getPokemonImageUrl2(pokemonData.id));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    loadPokemonData();
-  }, [params.pokemonIndex, pokemon.id]);
+    if (pokemonIndex) {
+      loadPokemonData();
+    }
+  }, [pokemonIndex, pokemons]);
 
   const baseStatsName = [
     "HP",
@@ -127,10 +114,23 @@ const Pokemon = () => {
     <Pokeball />
   ) : (
     <div className="col-12 fadeIn">
-      <h1 className="text-center text-uppercase Section-Heading">
-        {pokemon.name}
-      </h1>
-
+      <HeaderContainer>
+        <h1 className="text-center text-uppercase Section-Heading">
+          {pokemon.name}
+        </h1>
+        <Menu>
+          <img
+            src={pokemon.caught ? "/icons/caught.png" : "/icons/not_caught.png"}
+            onClick={handleCaughtClick}
+            alt="Capturado"
+          />
+          <img
+            src={pokemon.favorite ? "/icons/favorite.png" : "/icons/not_favorite.png"}
+            onClick={handleFavoriteClick}
+            alt="Favorito"
+          />
+        </Menu>
+      </HeaderContainer>
       <div
         className="row justify-content-center"
         style={{ position: "relative", paddingBottom: "1rem" }}

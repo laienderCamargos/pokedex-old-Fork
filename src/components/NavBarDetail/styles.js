@@ -37,3 +37,21 @@ export const TitleContainer = styled.nav`
     }
   }
 `;
+
+export const TemaContainer = styled.button`
+  margin-right: 6rem;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 6rem;
+  img {
+    width: 40px;
+    height: 40px;
+    display: block;
+  }
+`;

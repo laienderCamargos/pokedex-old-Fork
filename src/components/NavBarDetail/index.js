@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import { NavBarStyles, BackContainer } from "./styles";
+import { NavBarStyles, BackContainer, TemaContainer } from "./styles";
+import { ThemeContext } from "../../providers/theme";
 
 const NavBarDetail = () => {
+  const { toggleTheme, theme } = useContext(ThemeContext);
   return (
     <NavBarStyles className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <BackContainer>
@@ -13,6 +15,12 @@ const NavBarDetail = () => {
           </h2>
         </Link>
       </BackContainer>
+      <TemaContainer onClick={toggleTheme}>
+        <img
+          src={theme === "#000" ? "/icons/escuro.png" : "/icons/Claro.png"}
+          alt="Tema"
+        />
+      </TemaContainer>
     </NavBarStyles>
   );
 };

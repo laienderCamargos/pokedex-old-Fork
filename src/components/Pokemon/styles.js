@@ -131,3 +131,37 @@ export const ProgressDiv = styled.div`
     padding-right: 4px;
   }
 `;
+
+export const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  h1 {
+    margin: 0;
+  }
+`;
+
+export const Menu = styled.div`
+  padding-top: 28px;
+  height: 5.5rem;
+  background-color: transparent;
+  width: 86px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 0;
+  position: absolute;
+  right: 6rem;
+
+  img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    background-color: transparent;
+    // background-color:#fff;
+  }
+`;

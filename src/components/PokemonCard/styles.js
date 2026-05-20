@@ -8,6 +8,36 @@ export const CardName = styled.h1`
   width: 170px;
 `;
 
+export const Container = styled.div`
+  margin: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 12rem auto;
+  padding-bottom: 1.5rem;
+`;
+
+export const Menu = styled.div`
+  border-radius: 10px;
+  padding-top: 28px;
+  height: 5.5rem;
+  background: #ecf0f1;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+  width: 96%;
+  align-self: center;
+  margin-top: -20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+  }
+`;
+
 export const CardImg = styled.img`
   width: 100px;
   display: none;
@@ -41,7 +71,9 @@ export const Card = styled.div`
   border-radius: 10px;
   border: 1px solid;
   text-align: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
   position: relative;
   overflow: hidden;
 

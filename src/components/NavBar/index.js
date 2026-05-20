@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import { NavBarStyles, BackContainer, TitleContainer } from "./styles";
+import { NavBarStyles, BackContainer, TitleContainer, TemaContainer } from "./styles";
+import { ThemeContext } from "../../providers/theme";
 
 const NavBar = () => {
+  const { toggleTheme, theme } = useContext(ThemeContext);
+
   return (
     <NavBarStyles className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
       <BackContainer>
@@ -14,8 +17,17 @@ const NavBar = () => {
         </Link>
       </BackContainer>
       <TitleContainer className="title-container">
-        <h1>Escolha seu Pokemon</h1>
+        <div>
+          <h1>Escolha seu Pokemon</h1>
+        </div>
+
       </TitleContainer>
+      <TemaContainer onClick={toggleTheme}>
+        <img
+          src={theme === "#000" ? "/icons/escuro.png" : "/icons/Claro.png"}
+          alt="Tema"
+        />
+      </TemaContainer>
     </NavBarStyles>
   );
 };
